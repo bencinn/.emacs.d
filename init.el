@@ -46,9 +46,6 @@
 (require 'nano-faces)
 (require 'nano-bindings)
 (require 'nano-colors)
-(let ((inhibit-message t))
-  (message "Cafe latte, Cafe mocha, Cappucino!")
-  (message (format "Initialization time: %s" (emacs-init-time))))
 (require 'nano-splash)
 (require 'nano-help)
 (require 'nano-minibuffer)
@@ -174,6 +171,31 @@
         (get-buffer-window buffer 0)))
 
 (use-package markdown-mode)
+
+;; use-package with package.el:
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
+(setq dashboard-banner-logo-title "> D <")
+(setq dashboard-footer-messages '("NOTE: hug chino" "NOTE: pat chino" "NOTE: cuddle chino"))
+(setq dashboard-center-content t)
+(setq dashboard-projects-backend 'projectile)
+(setq dashboard-items          '((recents   . 5)
+                                 (projects  . 5)))
+(setq dashboard-item-shortcuts '((recents   . "r")
+                                 (projects  . "p")))
+(setq dashboard-projects-backend )
+(setq dashboard-startupify-list '(dashboard-insert-banner
+                                  dashboard-insert-newline
+                                  dashboard-insert-banner-title
+                                  dashboard-insert-newline
+                                  dashboard-insert-navigator
+                                  dashboard-insert-newline
+                                  dashboard-insert-init-info
+                                  dashboard-insert-items
+                                  dashboard-insert-newline
+                                  dashboard-insert-footer))
 
 (provide 'init)
 ;;; init.el ends here

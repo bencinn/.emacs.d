@@ -48,7 +48,3 @@
 
 (setq nano-font-family-monospaced "Iosevka Custom")
 (setq nano-font-size 14)
-
-(let ((inhibit-message t))
-  (message "Pyon")
-  (message (format "Initialization time: %s" (emacs-init-time))))
