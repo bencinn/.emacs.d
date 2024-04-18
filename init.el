@@ -23,7 +23,7 @@
 (use-package svg-lib)
 (straight-use-package
   '(svg-tag-mode :type git :host github :repo "rougier/svg-tag-mode":after svg-lib))
-(straight-use-package 'mini-frame)
+; (straight-use-package 'mini-frame)
 (straight-use-package
   '(nano :type git :host github :repo "bencinn/nano-emacs"))
 
@@ -48,7 +48,7 @@
 (require 'nano-colors)
 (require 'nano-splash)
 (require 'nano-help)
-(require 'nano-minibuffer)
+; (require 'nano-minibuffer)
 (require 'nano-command)
 
 (setq evil-want-keybinding nil)
@@ -137,6 +137,68 @@
 
 (setq projectile-completion-system 'ivy)
 (setq projectile-project-search-path '("~/code/"))
+(use-package vertico
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+  (keymap-set vertico-map "TAB" #'next-line-or-history-element)
+  (keymap-set vertico-map "<backtab>" #'previous-line-or-history-element)
+  (keymap-set vertico-map "M-TAB" #'minibuffer-complete)
+
+  ;; Show more candidates
+  (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t)
+  )
+(use-package consult
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  :after (vertico)
+  :bind (("C-c s f" . consult-eglot-symbols)
+         ("C-c s s" . consult-ripgrep)
+         ("C-c s g" . consult-git-grep)
+         ("C-c s m" . consult-man)
+         ("C-c s b" . consult-buffer)
+
+         )
+  :init
+  
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.3 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.3 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+
+  )
 (use-package ivy)
 (use-package projectile
   :ensure t
@@ -145,7 +207,7 @@
   :bind (:map projectile-mode-map
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
-
+(straight-use-package 'consult-eglot)
 (menu-bar-mode -1)
 
 (use-package eldoc-box)
